@@ -2,6 +2,11 @@ app:
     resource: "@AppBundle/Controller/"
     type:     annotation
 
+api:
+    resource: "@ApiBundle/Controller/ProductController.php"
+    type:     annotation
+    prefix:   /api
+
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
