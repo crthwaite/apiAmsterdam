@@ -23,7 +23,6 @@ class ProductType extends AbstractType
             ))
             ->add('available', CheckboxType::class, array(
                 'required' => false,
-                'multiple' => false,
             ))
         ;
     }

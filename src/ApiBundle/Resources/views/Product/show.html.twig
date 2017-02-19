@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Product {{ product.id }}
+{% endblock %}
+
+{% block body %}
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Available</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Created</th>
+                {% if is_granted("ROLE_ADMIN") %}<th>Actions</th>{% endif %}
+            </tr>
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{% if product.available %}Yes{% else %}No{% endif %}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.dateCreated | date('Y-m-d') }}</td>
+                {% if is_granted("ROLE_ADMIN") %}
+                    <td>
+                        <a href="{{ path('api_product_edit', {'id': product.id }) }}">Edit</a>
+                        <a href="{{ path('api_product_delete', {'id': product.id}) }}">Delete</a>
+                    </td>
+                {% endif %}
+            </tr>
+        </table>
+    </div>
+{% endblock %}

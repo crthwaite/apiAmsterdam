@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    New Product
+{% endblock %}
+
+{% block body %}
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <form action="{{ path('api_product_create') }}" method="post" {{ form_enctype(form) }}>
+            {{ form_start(form) }}
+
+            {{ form_row(form.name) }}
+            {{ form_row(form.available) }}
+            {{ form_row(form.price) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.submit) }}
+
+            {{ form_end(form) }}
+        </form>
+    </div>
+{% endblock %}

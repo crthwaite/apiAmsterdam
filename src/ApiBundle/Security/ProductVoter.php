@@ -29,7 +29,7 @@ class ProductVoter extends Voter
         }
 
         // only vote on Product objects inside this voter or null object in case of indexAction
-        if (!$subject instanceof Product or !is_null($subject)) {
+        if (!$subject instanceof Product) {
             return false;
         }
 

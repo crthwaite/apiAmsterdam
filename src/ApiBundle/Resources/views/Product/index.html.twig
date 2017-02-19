@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block body %}
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <table style="margin-bottom: 20px;">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Available</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{% if product.available %}Yes{% else %}No{% endif %}</td>
+                    <td>{{ product.price }}</td>
+                    <td><a href="{{ path('api_product_show', {'id' : product.id }) }}">View</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('api_product_new') }}">New</a>
+        {% endif %}
+    </div>
+{% endblock %}

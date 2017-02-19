@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,11 +24,27 @@ class ProductController extends Controller
      */
     public function indexAction()
     {
-        $this->denyAccessUnlessGranted('view');
+        $this->denyAccessUnlessGranted('view', new Product());
 
         $products = $this->getProductManager()->findAll();
 
         return array("products" => $products);
+    }
+
+    /**
+     * @Route("/{id}/show", name="api_product_show")
+     * @Template()
+     */
+    public function showAction($id)
+    {
+        $pm = $this->getProductManager();
+
+        /** @var Product $product */
+        $product = $pm->findById($id);
+
+        $this->denyAccessUnlessGranted('view', $product);
+
+        return array("product" => $product);
     }
 
     /**
@@ -47,7 +64,7 @@ class ProductController extends Controller
 
     /**
      * @Route("/create", name="api_product_create")
-     * @Template()
+     * @Template("ApiBundle:Product:new.html.twig")
      */
     public function createAction(Request $request)
     {
@@ -90,7 +107,7 @@ class ProductController extends Controller
 
     /**
      * @Route("/{id}/update", name="api_product_update")
-     * @Template()
+     * @Template("ApiBundle:Product:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {

@@ -10,7 +10,6 @@ class ProductManger extends CoreManager
     {
         return $this->getRepository()->find($id);
     }
-
     public function findAll()
     {
         return $this->getRepository()->findAll();
