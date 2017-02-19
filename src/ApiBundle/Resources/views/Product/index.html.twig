@@ -20,7 +20,13 @@ Products
                     <td>{{ product.name }}</td>
                     <td>{% if product.available %}Yes{% else %}No{% endif %}</td>
                     <td>{{ product.price }}</td>
-                    <td><a href="{{ path('api_product_show', {'id' : product.id }) }}">View</a></td>
+                    <td>
+                        <a href="{{ path('api_product_show', {'id' : product.id }) }}">View</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('api_product_edit', {'id': product.id }) }}">Edit</a>
+                            <a href="{{ path('api_product_delete', {'id': product.id}) }}">Delete</a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </table>
