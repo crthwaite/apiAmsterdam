@@ -3,6 +3,8 @@
 parameters:
   api.product.class: ApiBundle\Manager\ProductManger
   api.product.entity_class: ApiBundle\Entity\Product
+  api.user.class: ApiBundle\Manager\UserManager
+  api.user.entity_class: ApiBundle\Entity\User
 
 services:
     api.product_voter:
@@ -23,3 +25,8 @@ services:
         class: "%api.product.class%"
         arguments: [ "%api.product.entity_class%" ]
         parent: api.core_manager
+
+    api.user_manager:
+          class: "%api.user.class%"
+          arguments: [ "%api.user.entity_class%" ]
+          parent: api.core_manager

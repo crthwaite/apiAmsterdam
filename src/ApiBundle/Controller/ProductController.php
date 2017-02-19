@@ -5,13 +5,16 @@ namespace ApiBundle\Controller;
 use ApiBundle\Entity\Product;
 use ApiBundle\Form\ProductType;
 use ApiBundle\Manager\ProductManger;
+use ApiBundle\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
 /**
  * @Route("/products")
@@ -29,6 +32,46 @@ class ProductController extends Controller
         $products = $this->getProductManager()->findAll();
 
         return array("products" => $products);
+    }
+
+    /**
+     * @Route("/list/{email}/{password}", name="api_product_list")
+     */
+    public function apiGetList($email, $password) {
+        $this->checkCredentials($email, $password);
+
+        $pm = $this->getProductManager();
+
+        $products = $pm->findAll();
+
+        $data = array();
+
+        /** @var Product $product */
+        foreach($products as $product)
+        {
+            $data[] = $pm->parseListProduct($product);
+        }
+
+        $data = json_encode($data);
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/{id}/detail/{email}/{password}", name="api_product_detail")
+     */
+    public function apiGetDetail($id, $email, $password) {
+        $this->checkCredentials($email, $password);
+
+        $pm = $this->getProductManager();
+
+        $product = $pm->findById($id);
+
+        $data = $pm->parseSingleProduct($product);
+
+        $data = json_encode($data);
+
+        return new JsonResponse($data);
     }
 
     /**
@@ -163,6 +206,25 @@ class ProductController extends Controller
         return $form;
     }
 
+    private function checkCredentials($email, $password)
+    {
+        $um = $this->getUserManager();
+
+        $user = $um->findOneByEmail($email);
+
+        if ($user) {
+            $encoder_service = $this->get('security.encoder_factory');
+            $encoder = $encoder_service->getEncoder($user);
+
+            if ($encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
+                return;
+            } else {
+                throw new AccessDeniedException();
+            }
+        } else {
+            throw new AccessDeniedException();
+        }
+    }
     /**
      * @param $product
      *
@@ -183,5 +245,13 @@ class ProductController extends Controller
     private function getProductManager()
     {
         return $this->get('api.product_manager');
+    }
+
+    /**
+     * @return UserManager
+     */
+    private function getUserManager()
+    {
+        return $this->get('api.user_manager');
     }
 }
