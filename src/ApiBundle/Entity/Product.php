@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="ApiBundle\Entity\Repository\ProductRepository")
  * @ORM\Table(name="product")
  */
 class Product
@@ -47,6 +47,7 @@ class Product
 
     public function __construct()
     {
+        $this->dateCreated = new \DateTime('now');
     }
 
     /**
